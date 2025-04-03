@@ -41,7 +41,7 @@ def google_drive_to_base64(drive_url):
         return None
 
 # Load JSON
-with open('data.json', 'r') as file:
+with open('fineTuning/shayari.json', 'r') as file:
     raw_data = json.load(file)
 
 # Convert all Google Drive URLs to base64
@@ -55,7 +55,7 @@ for item in raw_data:
                         part["data"] = base64_img  # Replace URL with base64
 
 # Save the updated JSON
-with open('data.json', 'w') as file:
+with open('fineTuning/shayari.json', 'w') as file:
     json.dump(raw_data, file, indent=4)
 
 print("✅ Google Drive images converted to base64 successfully!")

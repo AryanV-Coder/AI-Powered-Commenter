@@ -7,14 +7,22 @@ import json
 import base64
 from io import BytesIO
 
-
-
+st.title("AI Powered Commenter")
+mood = ["Good & Funny Comments","Roasting","Shayari"]
+option = st.selectbox("Select a Mood:", mood)
 
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 model = genai.GenerativeModel("gemini-2.0-flash-lite")
 
-with open('data.json','r') as file:
-    data = json.load(file)  # Load JSON into a Python dictionary
+if (option == mood[0]):
+    with open('fineTuning/funny.json','r') as file:
+        data = json.load(file)  # Load JSON into a Python dictionary
+elif (option == mood[1]):
+    with open('fineTuning/roasting.json','r') as file:
+        data = json.load(file)  # Load JSON into a Python dictionary
+elif (option == mood[2]):
+    with open('fineTuning/shayari.json','r') as file:
+        data = json.load(file)  # Load JSON into a Python dictionary
 
 # Convert image to base64
 def encode_image(image):
@@ -25,7 +33,6 @@ def encode_image(image):
     image.save(buffered, format="JPEG")  
     return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-
 def aiResponse(data):
     response = model.generate_content(data,stream=True)
     response.resolve() # Ensure the response is fully generated
@@ -34,7 +41,6 @@ def aiResponse(data):
         yield word + " "
         time.sleep(0.02)
 
-st.title("AI Powered Commenter")
 
 enable = st.checkbox("Enable camera")
 capture = st.camera_input(label="Take a picture", disabled=not enable)
