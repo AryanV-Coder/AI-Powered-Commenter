@@ -48,7 +48,7 @@ def aiResponse(data):
 
 enable = st.checkbox("Enable camera")
 capture = st.camera_input(label="Take a picture", disabled=not enable)
-uploaded_image = st.file_uploader("Choose an image")
+uploaded_image = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png", "webp"])
 
 if capture :
     image = Image.open(capture)
