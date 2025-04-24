@@ -5,6 +5,7 @@ from  PIL import Image
 import time
 import json
 import base64
+from gtts import gTTS
 from io import BytesIO
 
 st.title("AI Powered Commenter")
@@ -33,10 +34,13 @@ def encode_image(image):
     image.save(buffered, format="JPEG")  
     return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
+# Text you want to convert to speech
+text = "Please capture or upload image"
 def aiResponse(data):
+    global text
     response = model.generate_content(data,stream=True)
     response.resolve() # Ensure the response is fully generated
-
+    text = response.text
     for word in response.text.split():
         yield word + " "
         time.sleep(0.02)
@@ -80,3 +84,16 @@ if uploaded_image :
             ]
     data = data + prompt
     st.write_stream(aiResponse(data))
+
+# Convert to speech (TTS)
+tts = gTTS(text, lang='hi')
+
+# Save to in-memory buffer instead of file
+audio_buffer = BytesIO()
+tts.write_to_fp(audio_buffer)
+
+# Rewind the buffer to the beginning
+audio_buffer.seek(0)
+
+# Play in Streamlit
+st.audio(audio_buffer, format='audio/mp3', autoplay = False)
