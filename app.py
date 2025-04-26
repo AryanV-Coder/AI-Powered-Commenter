@@ -7,6 +7,8 @@ import json
 import base64
 from gtts import gTTS
 from io import BytesIO
+import emoji
+import re
 
 st.title("AI Powered Commenter")
 mood = ["Good & Funny Comments","Roasting","Shayari"]
@@ -85,8 +87,33 @@ if uploaded_image :
     data = data + prompt
     st.write_stream(aiResponse(data))
 
+#Function for removing emojis
+def remove_emojis(text):
+    emoji_pattern = re.compile(
+        "["
+        u"\U0001F600-\U0001F64F"  # Emoticons 😀-😏
+        u"\U0001F300-\U0001F5FF"  # Symbols & pictographs 🌀-🗿
+        u"\U0001F680-\U0001F6FF"  # Transport & map symbols 🚀-🛳
+        u"\U0001F1E0-\U0001F1FF"  # Flags 🇦-🇿
+        u"\U00002700-\U000027BF"  # Dingbats ✀-➿
+        u"\U0001F900-\U0001F9FF"  # Supplemental symbols 🤺-🧿
+        u"\U00002600-\U000026FF"  # Misc symbols ☀️-⛅
+        u"\U0001FA70-\U0001FAFF"  # Symbols and Pictographs Extended-A 🩰-🩹
+        u"\U00002500-\U00002BEF"  # Chinese characters, drawing shapes, etc.
+        "]+", flags=re.UNICODE)
+    
+    # Remove emojis
+    text = emoji_pattern.sub(r'', text)
+    
+    # Remove variation selectors (skin tones, gender signs, etc.)
+    text = re.sub(r'[\u200d\u2640-\u2642\uFE0F]', '', text)
+
+    return text
+
+clean_text = remove_emojis(text)
+
 # Convert to speech (TTS)
-tts = gTTS(text, lang='hi')
+tts = gTTS(clean_text, lang='hi')
 
 # Save to in-memory buffer instead of file
 audio_buffer = BytesIO()

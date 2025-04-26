@@ -1,3 +1,4 @@
 *.streamlit/secrets.toml
 *.DS_Store
 *data_copy.json
+*improvements.txt
